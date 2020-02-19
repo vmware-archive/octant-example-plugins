@@ -1,0 +1,5 @@
+grpcio==1.25.0
+grpcio-health-checking==1.25.0
+pkg-resources==0.0.0
+protobuf==3.10.0
+six==1.13.0
