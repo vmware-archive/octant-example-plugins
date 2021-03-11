@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"github.com/vmware-tanzu/octant/pkg/action"
 	"github.com/vmware-tanzu/octant/pkg/navigation"
@@ -10,10 +9,9 @@ import (
 	"github.com/vmware-tanzu/octant/pkg/view/component"
 	"github.com/vmware-tanzu/octant/pkg/view/flexlayout"
 	"log"
-	"sync"
 )
 
-const pluginName = "actionPlugin"
+const pluginName = "action-api-sample"
 const addIntAction = "actionPlugin/addInt"
 const clearIntAction = "actionPlugin/clearInt"
 
@@ -24,7 +22,6 @@ func main() {
 	// Remove the prefix from the go logger since Octant will print logs with timestamps.
 	log.SetPrefix("")
 
-	// Tell Octant to call this plugin when printing configuration or tabs for Pods
 	capabilities := &plugin.Capabilities{
 		ActionNames: []string{addIntAction, clearIntAction},
 		IsModule:    true,
@@ -36,14 +33,11 @@ func main() {
 		service.WithNavigation(localPlugin.navHandler, localPlugin.initRoutes),
 	}
 
-	// Use the plugin service helper to register this plugin.
 	p, err := service.Register(pluginName, "a description", capabilities, options...)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// The plugin can log and the log messages will show up in Octant.
-	log.Printf("octant-sample-plugin is starting")
 	p.Serve()
 }
 
@@ -76,7 +70,7 @@ func (a *actionPlugin) routeHandler(request service.Request) (component.ContentR
 	for _, n := range a.store.list() {
 		items = append(items, component.NewText(fmt.Sprintf("%d", n)))
 	}
-	intList := component.NewList("Remote API Objects", items)
+	intList := component.NewList(component.TitleFromString("Remote API Objects"), items)
 	card.SetBody(intList)
 
 	form := component.Form{Fields: []component.FormField{
