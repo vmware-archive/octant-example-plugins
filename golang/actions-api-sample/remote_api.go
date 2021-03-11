@@ -1,3 +1,8 @@
+/*
+Copyright (c) 2021 the Octant contributors. All Rights Reserved.
+SPDX-License-Identifier: Apache-2.0
+*/
+
 package main
 
 import (
