@@ -29,7 +29,7 @@ Using the latest version of Octant is also recommended.
 | Extend GVK Sample | [:heavy_check_mark:]() |  | Adds additional components inside an existing view |
 | Actions API Sample | [:heavy_check_mark:]() |  | Calling a remote API and managing state |
 | Alert Sample | [:heavy_check_mark:]() |  | Sends an alert message |
-
+| Local Event Loop | |  | Maintain a local event loop not tied to Octant poll |
 ### To Do
 
  - [ ] Form Sample
