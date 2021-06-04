@@ -10,7 +10,9 @@ import * as octant from "@project-octant/plugin"; // Interfaces, interact with O
 import * as h from "@project-octant/plugin/helpers"; // Helpers, make objects for Octant to render
 
 // Plugin library components that will be displayed in Octant
+import { Component } from "@project-octant/plugin/components/component";
 import { TextFactory } from "@project-octant/plugin/components/text";
+import { ButtonFactory, ButtonConfig } from "@project-octant/plugin/components/button"
 import { ButtonGroupFactory } from "@project-octant/plugin/components/button-group";
 
 // Once we have the relevant imports, we can create some routes to interact with the plugin
@@ -55,25 +57,22 @@ function alertHandler(this: any, params: any): octant.ContentResponse {
   ];
 
   // Then, we create a button component for each alert type
-  const alertButtons = alertTypes.map(type => {
-    return {
-      name: `Alert - ${type}`,
-      // When the button is clicked, it will send a request to the plugin
-      // Thus, we specify the parameters we need here
-      payload: {
-        // `action` is an Octant Action - we must redefine this later
-        // This allows us to identify specifically that the button was clicked
-        action: "alert-sample.octant.dev/alert",
-        type, // So that the alert knows which type it should be
-        routeName, // Now accessible for our plugin
-      },
-    };
-  });
+  const alertButtons = alertTypes.map(type => new ButtonFactory({
+    name: `Alert - ${type}`,
+    // When the button is clicked, it will send a request to the plugin
+    // Thus, we specify the parameters we need here
+    payload: {
+      // `action` is an Octant Action - we must redefine this later
+      // This allows us to identify specifically that the button was clicked
+      action: "alert-sample.octant.dev/alert",
+      type, // So that the alert knows which type it should be
+      routeName, // Now accessible for our plugin
+    },
+  }).toComponent());
 
   const buttonGroup = new ButtonGroupFactory({
     buttons: alertButtons,
   });
-  console.log(JSON.stringify(buttonGroup))
   // Last step: invoke helper function to render newly-created components on page
   return h.createContentResponse([title], [buttonGroup]);
 }
