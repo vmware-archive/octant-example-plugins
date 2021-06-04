@@ -11,7 +11,7 @@ import * as h from "@project-octant/plugin/helpers"; // Helpers, make objects fo
 
 // Plugin library components that will be displayed in Octant
 import { TextFactory } from "@project-octant/plugin/components/text";
-import { ButtonFactory } from "@project-octant/plugin/components/button";
+import { ButtonGroupFactory } from "@project-octant/plugin/components/button-group";
 
 // Once we have the relevant imports, we can create some routes to interact with the plugin
 // In plugins larger than a single file, this is typically configured in `routes.ts`
@@ -46,23 +46,36 @@ function alertHandler(this: any, params: any): octant.ContentResponse {
   // We build the page title using plugin text components
   const title = new TextFactory({ value: `Alert Sample (${routeName})` });
 
-  // Then, we create a button component that will trigger an alert at the top of the page
-  const alertButton = [
-    new ButtonFactory({
-        name: "Alert",
-        // When the button is clicked, it will send a request to the plugin
-        // Thus, we specify the parameters we need here
-        payload: {
-          // `action` is an Octant Action - we must redefine this later
-          // This allows us to identify specifically that the button was clicked
-          action: "alert-sample.octant.dev/alert",
-          routeName // Now accessible for our plugin
-        }
-    })
+  // 4 types of alerts - https://github.com/vmware-tanzu/octant/blob/master/pkg/action/manager.go
+  const alertTypes: String[] = [
+    "INFO",
+    "ERROR",
+    "WARNING",
+    "SUCCESS",
   ];
 
+  // Then, we create a button component for each alert type
+  const alertButtons = alertTypes.map(type => {
+    return {
+      name: `Alert - ${type}`,
+      // When the button is clicked, it will send a request to the plugin
+      // Thus, we specify the parameters we need here
+      payload: {
+        // `action` is an Octant Action - we must redefine this later
+        // This allows us to identify specifically that the button was clicked
+        action: "alert-sample.octant.dev/alert",
+        type, // So that the alert knows which type it should be
+        routeName, // Now accessible for our plugin
+      },
+    };
+  });
+
+  const buttonGroup = new ButtonGroupFactory({
+    buttons: alertButtons,
+  });
+  console.log(JSON.stringify(buttonGroup))
   // Last step: invoke helper function to render newly-created components on page
-  return h.createContentResponse([title], alertButton);
+  return h.createContentResponse([title], [buttonGroup]);
 }
 
 // We do something similar for the invalid route handler
@@ -85,7 +98,8 @@ const AlertSample: octant.PluginConstructor = class AlertSample implements octan
   // We tell Octant about the general funcitons of the plugin
   capabilities = {
     actionNames: [
-      "alert-sample.octant.dev/alert" // The action triggered by the alert button
+      "alert-sample.octant.dev/alert", // The action triggered by the alert button
+      "action.octant.dev/setNamespace", // Triggered by default in plugins
     ],
   };
 
@@ -117,8 +131,7 @@ const AlertSample: octant.PluginConstructor = class AlertSample implements octan
       // For TypeScript plugins, alerts are sent by calling `dashboardClient.SendEvent()`
       // To tell Octant that we're sending an alert, our `eventType` is `event.octant.dev/alert`
       this.dashboardClient.SendEvent(request.clientState.clientID(), "event.octant.dev/alert", {
-        type: "INFO", // Other types are `ERROR`, `WARNING`, and `SUCCESS`
-        // See https://github.com/vmware-tanzu/octant/blob/master/pkg/action/manager.go
+        type: request.payload.type, // Depending on which button was clicked
         message: `Alert sent from route ${request.payload.routeName}`, // Message in alert
         expiration: 1 // Time that the alert is active (need units!)
       });
