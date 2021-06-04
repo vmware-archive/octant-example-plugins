@@ -1,3 +1,5 @@
+![Screen Shot 2021-06-04 at 5 43 57 PM](https://user-images.githubusercontent.com/33555592/120865681-812ff900-c55c-11eb-96b8-4f51459c5587.png)
+
 # alert-sample
 
 Octant supports multiple alert types; this example plugin demonstrates how to display each variant, using Octant's Actions API. 
