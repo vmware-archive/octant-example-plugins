@@ -19,20 +19,20 @@ import { ButtonGroupFactory } from "@project-octant/plugin/components/button-gro
 const router = new RouteRecognizer(); // Initiate plugin router
 
 // We define an action for frontend-backend communication (useful later)
-const action = "alert-sample.octant.dev/alert"
+const action = "actions-sample.octant.dev/action"
 
 // First, we specify a default route:
 const defaultRoute: Route = {
-  path: "/alert-sample", // Our plugin will be accessible at `/alert-sample` when visiting Octant
-  handler: alertHandler, // When this route is visited, call `alertHandler` (defined later in file)
-  // `alertHandler` will tell Octant how to render the plugin
+  path: "/actions-sample", // Plugin located at `/actions-sample` when visiting Octant
+  handler: actionsHandler, // When route visited, call `actionsHandler` (defined later in file)
+  // `actionsHandler` will tell Octant how to render the plugin
 };
 router.add([defaultRoute], { as: "default" }); // And then add it to the router
 
 // Then, let's add some dynamic routes, which will allow us to pass in parameters
 const dynamicRoute: Route = {
-  path: "alert/:alertName", // Later, we can use the value of `alertName` 
-  handler: alertHandler, // For this example, we'll use the same handler
+  path: "action/:actionName", // Later, we can use the value of `actionName` 
+  handler: actionsHandler, // For this example, we'll use the same handler
 };
 router.add([dynamicRoute]); // Added to the router as well
 
@@ -44,65 +44,75 @@ const notFoundRoute: Route = {
 router.add([notFoundRoute], { as: "notFound" });
 
 // Now that we have routes, we can add their handlers
-function alertHandler(this: any, params: any): octant.ContentResponse {
-  const routeName = params.alertName || "Home"; // Readable text to be displayed in the plugin
+function actionsHandler(this: any, params: any): octant.ContentResponse {
+  const routeName = params.actionName ?? "Home"; // Readable text to be displayed in the plugin
+
+  const currentNumber = this.numbers[routeName] ?? DEFAULT_NUMBER;
   
   // We build the page title using plugin text components
-  const title = new TextFactory({ value: `Alert Sample (${routeName})` });
+  const title = new TextFactory({ value: `Actions Sample (${routeName}): ${currentNumber}` });
 
-  // 4 types of alerts - https://github.com/vmware-tanzu/octant/blob/master/pkg/action/manager.go
-  const alertTypes: String[] = [
-    "INFO",
-    "ERROR",
-    "WARNING",
-    "SUCCESS",
-  ];
+  const description = new TextFactory({ value: "Update the number with the buttons!"});
 
-  // Then, we create a button component for each alert type
-  const alertButtons = alertTypes.map(type => new ButtonFactory({
-    name: `Alert - ${type}`,
-    // When the button is clicked, it will send a request to the plugin
-    // Thus, we specify the parameters we need here
-    payload: {
-      // `action` is an Octant Action - we must redefine this later
-      // This allows us to identify specifically that the button was clicked
-      action,
-      type, // So that the alert knows which type it should be
-      routeName, // Now accessible for our plugin
-    },
-  }).toComponent());
-
-  const buttonGroup = new ButtonGroupFactory({
-    buttons: alertButtons,
+  const operationButtons = new ButtonGroupFactory({
+    buttons: [
+      new ButtonFactory({
+        name: "Add 5",
+        payload: {
+          action,
+          routeName,
+          operation: "add",
+          amount: 5,
+        },
+      }).toComponent(),
+      new ButtonFactory({
+        name: "Double",
+        payload: {
+          action,
+          routeName,
+          operation: "multiply",
+          amount: 2
+        },
+      }).toComponent(),
+    ],
   });
+
   // Last step: invoke helper function to render newly-created components on page
-  return h.createContentResponse([title], [buttonGroup]);
+  return h.createContentResponse([title], [description], operationButtons);
 }
 
 // We do something similar for the invalid route handler
 function notFoundHandler(this: any, param: any): octant.ContentResponse {
   const title = [
-    new TextFactory({ value: "alert-sample" }),
+    new TextFactory({ value: "actions-sample" }),
     new TextFactory({ value: "Not found" }),
   ];
   const text = new TextFactory({ value: "Not Found." });
   return h.createContentResponse(title, [text]);
 }
 
+const DEFAULT_NUMBER = 5
+
 // We're now ready to create the plugin object itself!
-const AlertSample: octant.PluginConstructor = class AlertSample implements octant.Plugin {
+const ActionsSample: octant.PluginConstructor = class ActionsSample implements octant.Plugin {
   // First, specify some static properties used by Octant
-  name = "alert-sample";
-  description = "Sample plugin demonstrating alert capabilities";
+  name = "actions-sample";
+  description = "Sample plugin demonstrating action capabilities";
   isModule = true; // This tells Octant to call `navigationHandler()` and `contentHandler()`
 
   // We tell Octant about the general funcitons of the plugin
   capabilities = {
     actionNames: [
-      "alert-sample.octant.dev/alert", // The action triggered by the alert button
+      action, // The action triggered by the alert button
       "action.octant.dev/setNamespace", // Triggered by default in plugins
     ],
   };
+
+  numbers: { [name: string]: number } = {
+    "Home": DEFAULT_NUMBER,
+    "A": DEFAULT_NUMBER * 3,
+    "B": DEFAULT_NUMBER * 5
+  }
 
   // Octant will assign these via the constructor at runtime
   dashboardClient: octant.DashboardClient;
@@ -117,25 +127,36 @@ const AlertSample: octant.PluginConstructor = class AlertSample implements octan
   // We previously created plugin routes; now, we can make them appear in the sidebar
   navigationHandler(): octant.Navigation {
     // Create a new navigation pane; the plugin will appear on the leftmost sidebar
-    // with name "Alert Sample", route `alert-sample`, and a bell icon
-    const nav = new h.Navigation("Alert Sample", "alert-sample", "bell");
+    // with name "Actions Sample", route `actions-sample`, and a bell icon
+    const nav = new h.Navigation("Actions Sample", "actions-sample", "airplane");
     // Then, to demonstrate the dynamic route capabilities, let's add two of them to the nav:
-    nav.add("Alert Sample A", "alert/A");
-    nav.add("Alert Sample B", "alert/B");
+    nav.add("Actions Sample A", "action/A");
+    nav.add("Actions Sample B", "action/B");
     return nav;
   }
 
   // Here, we monitor all incoming actions
   actionHandler(request: octant.ActionRequest): octant.ActionResponse | void {
-    // Check to see if the action name corresponds with the one we defined earlier
+    // Check to see if the action name corresponds with the one associated with the button click
     if (request.actionName === action) {
       // For TypeScript plugins, alerts are sent by calling `dashboardClient.SendEvent()`
-      // To tell Octant that we're sending an alert, our `eventType` is `event.octant.dev/alert`
-      this.dashboardClient.SendEvent(request.clientState.clientID(), "event.octant.dev/alert", {
-        type: request.payload.type, // Depending on which button was clicked
-        message: `Alert sent from route ${request.payload.routeName}`, // Message in alert
-        expiration: 1 // Time that the alert is active (need units!)
-      });
+      
+      const { routeName, operation, amount } = request.payload;
+      let base = this.numbers[routeName] ?? DEFAULT_NUMBER;
+
+      if (operation === "add") {
+        base += amount;
+      } else if (operation === "multiply") {
+        base *= amount;
+      }
+
+      this.numbers[routeName] = base;
+
+      // this.dashboardClient.SendEvent(request.clientState.clientID(), "event.octant.dev/alert", {
+      //   type: "SUCCESS", // Depending on which button was clicked
+      //   message: `Alert sent from route ${request.payload.routeName}`, // Message in alert
+      //   expiration: 1 // Time that the alert is active (need units!)
+      // });
       return;
     }
     return;
@@ -147,6 +168,6 @@ const AlertSample: octant.PluginConstructor = class AlertSample implements octan
   }
 }
 
-export default AlertSample;
+export default ActionsSample;
 
-console.log("loading alert-sample.ts");
+console.log("loading actions-sample.ts");
