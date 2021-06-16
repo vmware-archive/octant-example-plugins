@@ -134,7 +134,7 @@ const AlertSample: octant.PluginConstructor = class AlertSample implements octan
       this.dashboardClient.SendEvent(request.clientState.clientID(), "event.octant.dev/alert", {
         type: request.payload.type, // Depending on which button was clicked
         message: `Alert sent from route ${request.payload.routeName}`, // Message in alert
-        expiration: 1 // Time that the alert is active (need units!)
+        expiration: 100 // Time that the alert is active (need units!)
       });
       return;
     }

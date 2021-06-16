@@ -47,13 +47,14 @@ router.add([notFoundRoute], { as: "notFound" });
 function actionsHandler(this: any, params: any): octant.ContentResponse {
   const routeName = params.actionName ?? "Home"; // Readable text to be displayed in the plugin
 
-  const currentNumber = this.numbers[routeName] ?? DEFAULT_NUMBER;
+  const currentNumber = this.numbers[routeName] ?? DEFAULT_NUMBER; // Access stateful property
   
   // We build the page title using plugin text components
   const title = new TextFactory({ value: `Actions Sample (${routeName}): ${currentNumber}` });
-
+  // Add descriptive text to page
   const description = new TextFactory({ value: "Update the number with the buttons!"});
 
+  // Create two buttons to manipulate the stateful property for the example
   const operationButtons = new ButtonGroupFactory({
     buttons: [
       new ButtonFactory({
@@ -61,6 +62,7 @@ function actionsHandler(this: any, params: any): octant.ContentResponse {
         payload: {
           action,
           routeName,
+          // Additional props passed to payload that can be accessed from plugin
           operation: "add",
           amount: 5,
         },
@@ -70,6 +72,7 @@ function actionsHandler(this: any, params: any): octant.ContentResponse {
         payload: {
           action,
           routeName,
+          // Same props changeed for second button
           operation: "multiply",
           amount: 2
         },
@@ -91,6 +94,7 @@ function notFoundHandler(this: any, param: any): octant.ContentResponse {
   return h.createContentResponse(title, [text]);
 }
 
+// Specify a default number constant (for the example)
 const DEFAULT_NUMBER = 5
 
 // We're now ready to create the plugin object itself!
@@ -103,11 +107,13 @@ const ActionsSample: octant.PluginConstructor = class ActionsSample implements o
   // We tell Octant about the general funcitons of the plugin
   capabilities = {
     actionNames: [
-      action, // The action triggered by the alert button
+      action, // The action used to update stateful values
       "action.octant.dev/setNamespace", // Triggered by default in plugins
     ],
   };
 
+  // `numbers` is a stateful property of the plugin that will persist across tab changes
+  // For the example plugin, we'll generate and store one number for each tab
   numbers: { [name: string]: number } = {
     "Home": DEFAULT_NUMBER,
     "A": DEFAULT_NUMBER * 3,
@@ -127,7 +133,7 @@ const ActionsSample: octant.PluginConstructor = class ActionsSample implements o
   // We previously created plugin routes; now, we can make them appear in the sidebar
   navigationHandler(): octant.Navigation {
     // Create a new navigation pane; the plugin will appear on the leftmost sidebar
-    // with name "Actions Sample", route `actions-sample`, and a bell icon
+    // with name "Actions Sample", route `actions-sample`, and an airplane icon
     const nav = new h.Navigation("Actions Sample", "actions-sample", "airplane");
     // Then, to demonstrate the dynamic route capabilities, let's add two of them to the nav:
     nav.add("Actions Sample A", "action/A");
@@ -139,24 +145,21 @@ const ActionsSample: octant.PluginConstructor = class ActionsSample implements o
   actionHandler(request: octant.ActionRequest): octant.ActionResponse | void {
     // Check to see if the action name corresponds with the one associated with the button click
     if (request.actionName === action) {
-      // For TypeScript plugins, alerts are sent by calling `dashboardClient.SendEvent()`
       
+      // Extract properties from the button click request's payload
       const { routeName, operation, amount } = request.payload;
       let base = this.numbers[routeName] ?? DEFAULT_NUMBER;
 
+      // Modify the corresponding number accordingly
       if (operation === "add") {
         base += amount;
       } else if (operation === "multiply") {
         base *= amount;
       }
 
+      // Finally, we update the plugin's property with the changed variable
       this.numbers[routeName] = base;
-
-      // this.dashboardClient.SendEvent(request.clientState.clientID(), "event.octant.dev/alert", {
-      //   type: "SUCCESS", // Depending on which button was clicked
-      //   message: `Alert sent from route ${request.payload.routeName}`, // Message in alert
-      //   expiration: 1 // Time that the alert is active (need units!)
-      // });
+      // This will automatically update the components with the new value on Octant's frontend
       return;
     }
     return;
