@@ -44,8 +44,12 @@ const notFoundRoute: Route = {
 router.add([notFoundRoute], { as: "notFound" });
 
 // Now that we have routes, we can add their handlers
+// Since we are displaying the same content for each route, we just dynamically show resources
 function resourceHandler(this: any, params: any): octant.ContentResponse {
-  const routeName: string = params.resourceName || "REAL_DATA_STATEFUL_SET";
+  // Default/fallback in case main route path is visited
+  const routeName: string = params.resourceName || "REAL_DATA_DAEMON_SET2";
+
+  // Speficy data for resource viewer based on selected route
   const resourceViewOptions: ResourceViewerOptions = resourceData[routeName];
   const resourceViewParameters = {
     options: resourceViewOptions

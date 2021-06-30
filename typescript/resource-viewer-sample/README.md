@@ -2,7 +2,7 @@
 
 # resource-viewer-sample
 
-Octant supports multiple alert types; this example plugin demonstrates how to display each variant, using Octant's Actions API. 
+Octant features a custom resource viewer that can display custom values passed in by plugins.
 
 # Installation
 
