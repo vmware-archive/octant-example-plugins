@@ -29,8 +29,7 @@ export const REAL_DATA_STATEFUL_SET: NodeDataDef = {
       path: {
         config: {
           value: 'kafka-config',
-          ref:
-            '/overview/namespace/milan/config-and-storage/config-maps/kafka-config',
+          ref: '/overview/namespace/milan/config-and-storage/config-maps/kafka-config',
         },
         metadata: {
           type: 'link',
@@ -49,8 +48,7 @@ export const REAL_DATA_STATEFUL_SET: NodeDataDef = {
       path: {
         config: {
           value: 'kafka-headless',
-          ref:
-            '/overview/namespace/milan/discovery-and-load-balancing/services/kafka-headless',
+          ref: '/overview/namespace/milan/discovery-and-load-balancing/services/kafka-headless',
         },
         metadata: {
           type: 'link',
@@ -69,8 +67,7 @@ export const REAL_DATA_STATEFUL_SET: NodeDataDef = {
       path: {
         config: {
           value: 'default-token-4dln7',
-          ref:
-            '/overview/namespace/milan/config-and-storage/secrets/default-token-4dln7',
+          ref: '/overview/namespace/milan/config-and-storage/secrets/default-token-4dln7',
         },
         metadata: {
           type: 'link',
@@ -111,8 +108,7 @@ export const REAL_DATA_STATEFUL_SET: NodeDataDef = {
       path: {
         config: {
           value: 'default',
-          ref:
-            '/overview/namespace/milan/config-and-storage/service-accounts/default',
+          ref: '/overview/namespace/milan/config-and-storage/service-accounts/default',
         },
         metadata: {
           type: 'link',
@@ -121,7 +117,7 @@ export const REAL_DATA_STATEFUL_SET: NodeDataDef = {
       },
     },
     'kafka pods': {
-      name: 'kafka pods',
+      name: 'kafka-pods',
       apiVersion: 'v1',
       kind: 'Pod',
       status: 'ok',
@@ -184,8 +180,7 @@ export const REAL_DATA_DAEMON_SET: NodeDataDef = {
       path: {
         config: {
           value: 'hubble-token-smc5q',
-          ref:
-            '/overview/namespace/kube-system/config-and-storage/secrets/hubble-token-smc5q',
+          ref: '/overview/namespace/kube-system/config-and-storage/secrets/hubble-token-smc5q',
         },
         metadata: {
           type: 'link',
@@ -207,8 +202,7 @@ export const REAL_DATA_DAEMON_SET: NodeDataDef = {
       path: {
         config: {
           value: 'hubble-grpc',
-          ref:
-            '/overview/namespace/kube-system/discovery-and-load-balancing/services/hubble-grpc',
+          ref: '/overview/namespace/kube-system/discovery-and-load-balancing/services/hubble-grpc',
         },
         metadata: {
           type: 'link',
@@ -230,8 +224,7 @@ export const REAL_DATA_DAEMON_SET: NodeDataDef = {
       path: {
         config: {
           value: 'hubble',
-          ref:
-            '/overview/namespace/kube-system/config-and-storage/service-accounts/hubble',
+          ref: '/overview/namespace/kube-system/config-and-storage/service-accounts/hubble',
         },
         metadata: {
           type: 'link',
@@ -240,7 +233,7 @@ export const REAL_DATA_DAEMON_SET: NodeDataDef = {
       },
     },
     'hubble pods': {
-      name: 'hubble pods',
+      name: 'hubble-pods',
       apiVersion: 'v1',
       kind: 'Pod',
       status: 'ok',
@@ -334,8 +327,7 @@ export const REAL_DATA_DAEMON_SET2: NodeDataDef = {
         },
         config: {
           value: 'metadata-proxy-v0.1',
-          ref:
-            '/overview/namespace/kube-system/workloads/daemon-sets/metadata-proxy-v0.1',
+          ref: '/overview/namespace/kube-system/workloads/daemon-sets/metadata-proxy-v0.1',
         },
       },
       hasChildren: false,
