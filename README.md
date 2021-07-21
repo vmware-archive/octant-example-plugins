@@ -2,7 +2,7 @@
 
 This repository contains minimal code samples illustrating some common patterns around plugins.
 
-Supported plugins are written in TypeScript or Go although it is possible to write plugins in any language.
+Supported plugins are written in TypeScript or Go, although it is possible to write plugins in any language.
 
 Each plugin sample should contain:
 
@@ -19,7 +19,7 @@ Using the latest version of Octant is also recommended.
 
  - Go version 1.16+
  - Node 14+
- - Octant 0.17+
+ - Octant 0.22+
 
 ## Samples
 
