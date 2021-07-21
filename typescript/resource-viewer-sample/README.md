@@ -1,4 +1,4 @@
-![Screen Shot 2021-06-04 at 5 43 57 PM](https://user-images.githubusercontent.com/33555592/120865681-812ff900-c55c-11eb-96b8-4f51459c5587.png)
+<img width="1155" alt="Screen Shot 2021-07-21 at 3 44 12 PM" src="https://user-images.githubusercontent.com/33555592/126551484-5c74bc83-d045-47a7-8a57-f15f26830f12.png">
 
 # resource-viewer-sample
 
