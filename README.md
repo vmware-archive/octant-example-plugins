@@ -19,7 +19,7 @@ Using the latest version of Octant is also recommended.
 
  - Go version 1.16+
  - Node 14+
- - Octant 0.22+
+ - Octant 0.23+
 
 ## Samples
 

@@ -2,7 +2,7 @@
 
 # actions-sample
 
-Octant supports multiple alert types; this example plugin demonstrates how to display each variant, using Octant's Actions API. 
+Using Octant's Actions API, it's possible to store and update stateful data; this sample plugin demonstrates using the Actions API to increment variables. 
 
 # Installation
 

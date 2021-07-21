@@ -2,7 +2,7 @@
 
 # resource-viewer-sample
 
-Octant features a custom resource viewer that can display custom values passed in by plugins.
+Octant features a custom resource viewer that can display custom values passed in by plugins; this example demonstrates how example resource viewer data ([from the Octant reference](https://reference.octant.dev/?path=/story/other-resources--graph-story)) can be passed into Octant's resource viewer.
 
 # Installation
 
