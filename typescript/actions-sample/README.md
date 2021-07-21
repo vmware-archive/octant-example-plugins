@@ -1,4 +1,4 @@
-![Screen Shot 2021-06-04 at 5 43 57 PM](https://user-images.githubusercontent.com/33555592/120865681-812ff900-c55c-11eb-96b8-4f51459c5587.png)
+<img width="1155" alt="Screen Shot 2021-07-21 at 3 45 08 PM" src="https://user-images.githubusercontent.com/33555592/126551296-adbbed08-cbc0-4afa-9c2c-52488f0b6d6f.png">
 
 # actions-sample
 
