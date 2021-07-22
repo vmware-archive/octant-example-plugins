@@ -15,7 +15,7 @@ If you want to create an Octant plugin in TypeScript, this is the place to start
 
 # Example Plugins
 
-All example plugins are modules, meaning that they support a built-in plugin sidebar, and can contain multiple custom routes. There are currently 3 sample TypeScript plugins - more are always welcome, PRs encouraged! 
+All example plugins are modules, meaning that they support a built-in plugin sidebar, and can contain multiple custom routes. More plugins are always welcome, PRs encouraged! 
 
 * ['actions-sample`](https://github.com/vmware-tanzu/octant-example-plugins/tree/master/typescript/actions-sample): Demonstrates Octant's Actions API to store and update stateful plugin data
 * ['alert-sample`](https://github.com/vmware-tanzu/octant-example-plugins/tree/master/typescript/alert-sample): Demonstrates sending a banner alert to Octant using TypeScript
