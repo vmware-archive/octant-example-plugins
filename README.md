@@ -1,3 +1,4 @@
+# VMware has ended active development of this project, this repository will no longer be updated.
 ## Octant Plugin Samples
 
 This repository contains minimal code samples illustrating some common patterns around plugins.
